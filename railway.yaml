@@ -1,0 +1,8 @@
+name: Pythondoing
+service:
+     name: web
+     type: http
+     script: python app.py
+env:
+  CHANNEL_ACCESS_TOKEN: ycat
+  CHANNEL_SECRET: ycs
