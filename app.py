@@ -1,32 +1,29 @@
+from linebot import LineBotApi, WebhookHandler 
+from linebot.models import MessageEvent, TextMessage, TextSendMessage 
+from linebot.exceptions import InvalidSignatureError 
+from flask import Flask, request, abort 
+# LINE Botのチャンネルアクセストークンとチャンネルシークレット
+CHANNEL_ACCESS_TOKEN = 'YOUR_CHANNEL_ACCESS_TOKEN' 
+CHANNEL_SECRET = 'YOUR_CHANNEL_SECRET' 
 
-import os
-from flask import Flask, request, abort
-from linebot import LineBotApi, WebhookHandler
-from linebot.models import MessageEvent, TextMessage, TextSendMessage
-import math
-
-HELP = '入力文字列に対してPythonのevalが実行されます．モジュールはmathのみ読み込んでいます、適宜追加してください．'
-
-A = Flask(__name__)
-B = LineBotApi(os.environ["ACCESS_TOKEN"])
-H = WebhookHandler(os.environ["CHANNEL_SECRET"])
-
-@A.route("/callback", methods=['POST'])
-def callback():
-    s = request.headers['X-Line-Signature']
-    b = request.get_data(as_text=True)
-    H.handle(b, s)
-    return('OK')
-
-@H.add(MessageEvent, message=TextMessage)
-def handle_message(e):
-    u = e.message.text
-    if (u.lower() == 'help'):
-        r = HELP
-    else:
-        r = eval("str(" + u + ")", {"math":math})
-    B.reply_message(e.reply_token, TextSendMessage(text=r))
-
+line_bot_api = LineBotApi(CHANNEL_ACCESS_TOKEN) 
+handler = WebhookHandler(CHANNEL_SECRET) 
+app = Flask(__name__) 
+@app.route("/callback", methods=['POST']) 
+def callback(): # LINEからのリクエストかどうかを確認 
+    signature = request.headers['X-Line-Signature'] 
+    try: 
+        handler.handle(request.data.decode('utf-8'), signature) 
+    except InvalidSignatureError: 
+        abort(400) 
+    return 'OK' 
+@handler.add(MessageEvent, message=TextMessage) 
+def handle_message(event): 
+    user_input = event.message.text 
+    try: 
+        # evalを使用してユーザー入力を評価（セキュリティ上の問題に注意） 
+        result = str(eval(user_input))
+        line_bot_api.reply_message(event.reply_token, TextSendMessage(text=result)) 
+    except Exception as e: line_bot_api.reply_message(event.reply_token, TextSendMessage(text='エラー: ' + str(e))) 
 if __name__ == "__main__":
-    p = int(os.getenv("PORT"))
-    A.run(host="0.0.0.0", port=p)
+    app.run()
