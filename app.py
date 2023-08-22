@@ -1,6 +1,6 @@
 
 import os
-from flask import Flask, request
+from flask import Flask, request, abort
 from linebot import LineBotApi, WebhookHandler
 from linebot.models import MessageEvent, TextMessage, TextSendMessage
 import math
@@ -11,7 +11,7 @@ A = Flask(__name__)
 B = LineBotApi(os.environ["ACCESS_TOKEN"])
 H = WebhookHandler(os.environ["CHANNEL_SECRET"])
 
-@A.route("/", methods=['POST'])
+@A.route("/callback", methods=['POST'])
 def callback():
     s = request.headers['X-Line-Signature']
     b = request.get_data(as_text=True)
