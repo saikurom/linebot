@@ -4,8 +4,8 @@ from linebot.models import MessageEvent, TextMessage, TextSendMessage
 from linebot.exceptions import InvalidSignatureError 
 from flask import Flask, request, abort 
 # LINE Botのチャンネルアクセストークンとチャンネルシークレット
-CHANNEL_ACCESS_TOKEN = 'YOUR_CHANNEL_ACCESS_TOKEN' 
-CHANNEL_SECRET = 'YOUR_CHANNEL_SECRET' 
+CHANNEL_ACCESS_TOKEN = os.environ.get("CHANNEL_ACCESS_TOKEN")
+CHANNEL_SECRET = os.environ.get("CHANNEL_SECRET")
 
 line_bot_api = LineBotApi(CHANNEL_ACCESS_TOKEN) 
 handler = WebhookHandler(CHANNEL_SECRET) 
