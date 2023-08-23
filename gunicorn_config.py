@@ -7,7 +7,7 @@ workers = 4
 app_module = 'main:app'
 
 # リクエストを待ち受けるポート
-bind = '0.0.0.0:8000'
+bind = '0.0.0.0:443'
 
 # ログファイルの設定
 accesslog = '-'  # 標準出力にログを出力
