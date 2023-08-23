@@ -12,7 +12,7 @@ handler = WebhookHandler(CHANNEL_SECRET)
 app = Flask(__name__) 
 
 @app.route("/callback", methods=['POST']) 
-  def callback(): # LINEからのリクエストかどうかを確認 
+def callback(): # LINEからのリクエストかどうかを確認 
     signature = request.headers['X-Line-Signature'] 
     try: 
         handler.handle(request.data.decode('utf-8'), signature) 
@@ -21,7 +21,7 @@ app = Flask(__name__)
     return 'OK' 
       
 @handler.add(MessageEvent, message=TextMessage) 
-  def handle_message(event): 
+def handle_message(event): 
     user_input = event.message.text 
     try: 
         # evalを使用してユーザー入力を評価（セキュリティ上の問題に注意） 
