@@ -28,6 +28,6 @@ def handle_message(event):
         # evalを使用してユーザー入力を評価（セキュリティ上の問題に注意） 
         result = str(eval(user_input))
         line_bot_api.reply_message(event.reply_token, TextSendMessage(text=result)) 
-    except Exception as e: line_bot_api.reply_message(event.reply_token, TextSendMessage(text='エラー: ' + str(e))) 
+    except Exception as e: line_bot_api.reply_message(event.reply_token, TextSendMessage(text='何言ってるの？' )) 
 if __name__ == "__main__":
     app.run()
